@@ -75,7 +75,7 @@ mod imp {
             // Call "constructed" on parent
             self.parent_constructed();
             self.search_listbox.bind_model(
-                Some(&self.yahoo_model),
+                Some(&*self.yahoo_model),
                 clone!(@weak self as window => @default-panic, move |item| {
                 SymbolListBoxRow::new(
                     item.downcast_ref::<Symbol>()
