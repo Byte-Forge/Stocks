@@ -1,0 +1,4 @@
+data/org.byteforge.stocks.desktop.in
+data/org.byteforge.stocks.appdata.xml.in
+data/org.byteforge.stocks.gschema.xml
+src/window.ui

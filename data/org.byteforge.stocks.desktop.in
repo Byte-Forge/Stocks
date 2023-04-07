@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=stocks
+Exec=stocks
+Icon=org.byteforge.stocks
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true
