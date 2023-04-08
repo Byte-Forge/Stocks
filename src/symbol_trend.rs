@@ -80,14 +80,21 @@ mod imp {
     impl BinImpl for SymbolTrend {}
     impl WidgetImpl for SymbolTrend {
         fn map(&self) {
+            self.parent_map();
+
+            if(self.symbol.borrow().is_none()) {
+                // No idea how that can happen
+                return;
+            }
+
             self.symbol
                 .borrow_mut()
                 .take()
                 .unwrap()
                 .bind_property("price", &self.price.get(), "label")
                 .transform_to(|_, price: f64| {
-                    println!("price changed");
-                    Some(price.to_string())
+                    println!("Price: {:.2}", price);
+                    Some(format!("{:.2}", price))
                 })
                 .flags(BindingFlags::DEFAULT | BindingFlags::SYNC_CREATE)
                 .build();

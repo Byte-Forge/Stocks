@@ -91,8 +91,7 @@ mod imp {
                     row.set_title(&symbol.symbol());
                     row.set_subtitle(&symbol.longname());
 
-                    let symbol_info = SymbolTrend::new(symbol);
-                    row.add_suffix(&symbol_info);
+                    row.add_suffix(&SymbolTrend::new(symbol));
 
                     row.set_activatable(true);
                     row.upcast::<gtk::Widget>()
