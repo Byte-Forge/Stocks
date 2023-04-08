@@ -19,15 +19,16 @@
  */
 
 use adw::subclass::prelude::*;
+use adw::{prelude::*, ActionRow};
 use gtk::{
     gio,
     glib::{self, clone},
     prelude::*,
 };
 
-use crate::YahooFinanceModel;
 use crate::Symbol;
-use crate::SymbolListBoxRow;
+use crate::SymbolTrend;
+use crate::YahooFinanceModel;
 
 mod imp {
     use super::*;
@@ -77,11 +78,17 @@ mod imp {
             self.search_listbox.bind_model(
                 Some(&*self.yahoo_model),
                 clone!(@weak self as window => @default-panic, move |item| {
-                SymbolListBoxRow::new(
-                    item.downcast_ref::<Symbol>()
-                        .expect("RowData is of wrong type"),
-                )
-                .upcast::<gtk::Widget>()
+                    let symbol = item.downcast_ref::<Symbol>()
+                                     .expect("RowData is of wrong type");
+
+                    let row = ActionRow::new();
+                    row.set_title(&symbol.symbol());
+                    row.set_subtitle(&symbol.longname());
+
+                    let symbol_info = SymbolTrend::new(symbol);
+                    row.add_suffix(&symbol_info);
+
+                    row.upcast::<gtk::Widget>()
                 }),
             );
         }

@@ -10,12 +10,16 @@ use std::cell::RefCell;
 #[derive(Default, Properties)]
 #[properties(wrapper_type = super::Symbol)]
 pub struct Symbol {
+    #[property(get, set, construct_only)]
+    symbol: RefCell<String>,
     #[property(get, set)]
-    symbol: RefCell<Option<String>>,
+    shortname: RefCell<String>,
     #[property(get, set)]
-    shortname: RefCell<Option<String>>,
+    longname: RefCell<String>,
     #[property(get, set)]
-    longname: RefCell<Option<String>>,
+    price: RefCell<f64>,
+    #[property(get, set)]
+    market_change: RefCell<f64>,
 }
 
 // Basic declaration of our type for the GObject type system

@@ -55,16 +55,10 @@ impl ObjectImpl for SymbolListBoxRow {
         // change of value in the spin button will be automatically reflected in
         // the item.
         let label = gtk::Label::new(None);
-        item.bind_property("name", &label, "label")
+        item.bind_property("symbol", &label, "label")
             .sync_create()
             .build();
         hbox.append(&label);
-        let spin_button = gtk::SpinButton::with_range(0.0, 100.0, 1.0);
-        item.bind_property("count", &spin_button, "value")
-            .sync_create()
-            .bidirectional()
-            .build();
-        hbox.append(&spin_button);
 
         // When the edit button is clicked, a new modal dialog is created for editing
         // the corresponding row

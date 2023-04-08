@@ -16,6 +16,16 @@ impl YahooFinanceModel {
         glib::Object::new()
     }
 
+    pub fn clear(&self) {
+        let imp = self.imp();
+        let size = imp.symbols.borrow().len();
+        {
+            imp.symbols.borrow_mut().clear();
+        }
+        // Emits a signal that all items were removed at the position 0
+        self.items_changed(0 as u32, size as u32, 0 as u32);
+    }
+
     pub fn append(&self, obj: &Symbol) {
         let imp = self.imp();
         let index = {

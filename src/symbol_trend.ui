@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0" />
+    <template class="SymbolTrend" parent="AdwBin">
+        <child>
+            <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="valign">center</property>
+                <child>
+                    <object class="GtkLabel" id="price">
+                        <property name="halign">end</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkLabel" id="change">
+                        <property name="halign">end</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>
