@@ -43,6 +43,8 @@ mod imp {
         pub stocks_listbox: TemplateChild<gtk::ListBox>,
         #[template_child]
         pub search_listbox: TemplateChild<gtk::ListBox>,
+        #[template_child]
+        pub leaflet: TemplateChild<adw::Leaflet>,
     }
 
     #[glib::object_subclass]
@@ -65,10 +67,14 @@ mod imp {
     #[gtk::template_callbacks]
     impl StocksWindow {
         #[template_callback]
-        fn handle_row_activated(&self, listbox: &gtk::ListBox, row: &gtk::ListBoxRow) {}
+        fn handle_row_activated(&self, row: &gtk::ListBoxRow, listbox: &gtk::ListBox) {
+            self.leaflet.navigate(adw::NavigationDirection::Forward);
+        }
 
         #[template_callback]
-        fn handle_leaflet_back(&self) {}
+        fn handle_leaflet_back(&self) {
+            self.leaflet.navigate(adw::NavigationDirection::Back);
+        }
     }
 
     impl ObjectImpl for StocksWindow {
@@ -88,6 +94,7 @@ mod imp {
                     let symbol_info = SymbolTrend::new(symbol);
                     row.add_suffix(&symbol_info);
 
+                    row.set_activatable(true);
                     row.upcast::<gtk::Widget>()
                 }),
             );

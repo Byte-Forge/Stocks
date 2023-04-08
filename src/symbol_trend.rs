@@ -97,7 +97,7 @@ mod imp {
 
 glib::wrapper! {
     pub struct SymbolTrend(ObjectSubclass<imp::SymbolTrend>)
-        @extends gtk::Widget;
+        @extends gtk::Widget, adw::Bin;
 }
 
 impl SymbolTrend {
