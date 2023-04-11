@@ -23,7 +23,6 @@ mod config;
 mod currency;
 mod currency_label;
 mod symbol;
-mod symbol_list_box_row;
 mod symbol_trend;
 mod window;
 mod yahoo_finance_model;

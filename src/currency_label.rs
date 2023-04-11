@@ -56,11 +56,6 @@ mod imp {
         fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
             self.derived_property(id, pspec)
         }
-
-        fn constructed(&self) {
-            self.parent_constructed();
-            let obj = self.obj();
-        }
     }
 
     impl WidgetImpl for CurrencyLabel {}
