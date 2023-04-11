@@ -1,6 +1,6 @@
 /* application.rs
  *
- * Copyright 2023 stephan
+ * Copyright 2023 Stephan Vedder
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

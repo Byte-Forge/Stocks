@@ -1,6 +1,6 @@
 /* window.rs
  *
- * Copyright 2023 stephan
+ * Copyright 2023 Stephan Vedder
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,7 @@
 
 use crate::Symbol;
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::{
-    glib::{self, BindingFlags, ParamSpec, Properties, Value},
-};
+use gtk::glib::{self, BindingFlags, ParamSpec, Properties, Value};
 use std::cell::RefCell;
 
 mod imp {
@@ -93,15 +91,6 @@ mod imp {
             symbol
                 .bind_property("market_change", &self.change.get(), "label")
                 .transform_to(|_, change: f64| {
-                    if change >= 0.0 {
-                        self.change.add_css_class("success");
-                        self.price.add_css_class("success");
-                    }
-                    else {
-                        self.change.add_css_class("error");
-                        self.price.add_css_class("error");
-                    }
-
                     println!("Change: {:.2}%", change);
                     Some(format!("{:.2}%", change))
                 })
