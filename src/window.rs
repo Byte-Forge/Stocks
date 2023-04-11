@@ -23,7 +23,6 @@ use adw::{prelude::*, ActionRow};
 use gtk::{
     gio,
     glib::{self, clone},
-    prelude::*,
 };
 
 use crate::Symbol;
@@ -67,7 +66,7 @@ mod imp {
     #[gtk::template_callbacks]
     impl StocksWindow {
         #[template_callback]
-        fn handle_row_activated(&self, row: &gtk::ListBoxRow, listbox: &gtk::ListBox) {
+        fn handle_row_activated(&self, _row: &gtk::ListBoxRow, _listbox: &gtk::ListBox) {
             self.leaflet.navigate(adw::NavigationDirection::Forward);
         }
 

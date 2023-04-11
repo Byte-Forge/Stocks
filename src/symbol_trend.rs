@@ -21,10 +21,7 @@
 use crate::Symbol;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::{
-    gio,
-    glib::{self, clone, ParamSpec, Properties, Value, BindingFlags},
-    prelude::*,
-    subclass::prelude::*,
+    glib::{self, BindingFlags, ParamSpec, Properties, Value},
 };
 use std::cell::RefCell;
 
@@ -82,19 +79,31 @@ mod imp {
         fn map(&self) {
             self.parent_map();
 
-            if(self.symbol.borrow().is_none()) {
-                // No idea how that can happen
-                return;
-            }
+            let symbol = self.obj().symbol().unwrap();
 
-            self.symbol
-                .borrow_mut()
-                .take()
-                .unwrap()
+            symbol
                 .bind_property("price", &self.price.get(), "label")
                 .transform_to(|_, price: f64| {
                     println!("Price: {:.2}", price);
                     Some(format!("{:.2}", price))
+                })
+                .flags(BindingFlags::DEFAULT | BindingFlags::SYNC_CREATE)
+                .build();
+
+            symbol
+                .bind_property("market_change", &self.change.get(), "label")
+                .transform_to(|_, change: f64| {
+                    if change >= 0.0 {
+                        self.change.add_css_class("success");
+                        self.price.add_css_class("success");
+                    }
+                    else {
+                        self.change.add_css_class("error");
+                        self.price.add_css_class("error");
+                    }
+
+                    println!("Change: {:.2}%", change);
+                    Some(format!("{:.2}%", change))
                 })
                 .flags(BindingFlags::DEFAULT | BindingFlags::SYNC_CREATE)
                 .build();
@@ -111,5 +120,4 @@ impl SymbolTrend {
     pub fn new(symbol: &Symbol) -> Self {
         glib::Object::builder().property("symbol", symbol).build()
     }
-
 }

@@ -18,8 +18,6 @@ glib::wrapper! {
 // initial values for our two properties and then returns the new instance
 impl Symbol {
     pub fn new(symbol: &str) -> Symbol {
-        glib::Object::builder()
-            .property("symbol", symbol)
-            .build()
+        glib::Object::builder().property("symbol", symbol).build()
     }
 }

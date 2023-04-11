@@ -11,8 +11,6 @@ glib::wrapper! {
 
 impl SymbolListBoxRow {
     pub fn new(symbol: &Symbol) -> Self {
-        glib::Object::builder()
-            .property("symbol", &symbol)
-            .build()
+        glib::Object::builder().property("symbol", &symbol).build()
     }
 }

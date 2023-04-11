@@ -9,7 +9,7 @@ use gtk::{
 };
 use std::cell::RefCell;
 use std::sync::Arc;
-use yahoo_finance_api as yahoo;
+use stocks_api;
 
 #[derive(Properties)]
 #[properties(wrapper_type = super::YahooFinanceModel)]
@@ -17,7 +17,7 @@ pub struct YahooFinanceModel {
     #[property(get, set)]
     search_text: RefCell<String>,
     pub(super) symbols: RefCell<Vec<Symbol>>,
-    pub(super) provider: Arc<yahoo::YahooConnector>,
+    pub(super) provider: Arc<stocks_api::YahooFinanceAPI>,
 }
 
 /// Basic declaration of our type for the GObject type system
@@ -31,7 +31,7 @@ impl ObjectSubclass for YahooFinanceModel {
         Self {
             search_text: RefCell::new(String::new()),
             symbols: RefCell::new(Vec::new()),
-            provider: Arc::new(yahoo::YahooConnector::new()),
+            provider: Arc::new(stocks_api::YahooFinanceAPI::new()),
         }
     }
 }
@@ -76,12 +76,12 @@ impl YahooFinanceModel {
         for i in 0..self.n_items() {
             let symbol = self.item(i).unwrap().downcast::<Symbol>().unwrap();
 
-            let (sender, receiver) = MainContext::channel::<yahoo::YResponse>(PRIORITY_DEFAULT);
+            let (sender, receiver) = MainContext::channel::<stocks_api::Quote>(PRIORITY_DEFAULT);
             let provider = self.provider.clone();
             let ticker = symbol.symbol();
 
             tokio::spawn(async move {
-                let tickers = provider.get_latest_quotes(&ticker, "1d").await;
+                let tickers = provider.get_quote(&ticker).await;
                 sender
                     .send(tickers.expect("Failed to get latest quotes"))
                     .expect("Failed to send to channel");
@@ -91,8 +91,9 @@ impl YahooFinanceModel {
                 None,
                 clone!(@weak symbol => @default-return Continue(false),
                             move |response| {
-                                let quote = response.last_quote().unwrap();
-                                symbol.set_price(quote.close);
+                                let quote = response;
+                                symbol.set_price(quote.regular_market_price);
+                                symbol.set_market_change(quote.regular_market_change);
                                 Continue(true)
                             }
                 ),
@@ -106,7 +107,7 @@ impl YahooFinanceModel {
 
     fn setup_search(&self) {
         let obj = self.obj();
-        let (sender, receiver) = MainContext::channel::<yahoo::YSearchResult>(PRIORITY_DEFAULT);
+        let (sender, receiver) = MainContext::channel::<Vec<stocks_api::Symbol>>(PRIORITY_DEFAULT);
 
         obj.connect_search_text_notify(move |model| {
             println!("Search text now is {}", model.search_text());
@@ -116,9 +117,9 @@ impl YahooFinanceModel {
             let search_text = model.imp().search_text.borrow().clone();
 
             tokio::spawn(async move {
-                let tickers = provider.search_ticker(&search_text).await;
+                let tickers = provider.search_symbols(&search_text).await;
                 sender
-                    .send(tickers.expect("Failed to search tickers"))
+                    .send(tickers.expect("Failed to search symbols"))
                     .expect("Failed to send to channel");
             });
         });
@@ -127,13 +128,17 @@ impl YahooFinanceModel {
         receiver.attach(
             None,
             clone!(@weak self as obj => @default-return Continue(false),
-                        move |results| {
+                        move |symbols| {
                             obj.obj().clear();
-                            for item in results.quotes {
+                            for item in symbols {
                                 println!("{}", item.symbol);
                                 let symbol = Symbol::new(item.symbol.as_str());
-                                symbol.set_longname(item.long_name);
-                                symbol.set_shortname(item.short_name);
+                                if let Some(long_name) = item.long_name {
+                                   symbol.set_longname(long_name);
+                                }
+                                if let Some(short_name) = item.short_name {
+                                   symbol.set_shortname(short_name);
+                                }
                                 obj.obj().append(&symbol)
                             }
                             obj.update_symbols();

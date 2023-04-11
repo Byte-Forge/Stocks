@@ -20,18 +20,17 @@
 
 mod application;
 mod config;
-mod window;
 mod symbol;
 mod symbol_list_box_row;
 mod symbol_trend;
+mod window;
 mod yahoo_finance_model;
 
 use self::application::StocksApplication;
+use self::symbol::Symbol;
+use self::symbol_trend::SymbolTrend;
 use self::window::StocksWindow;
 use self::yahoo_finance_model::YahooFinanceModel;
-use self::symbol::Symbol;
-use self::symbol_list_box_row::SymbolListBoxRow;
-use self::symbol_trend::SymbolTrend;
 
 use config::{GETTEXT_PACKAGE, LOCALEDIR, PKGDATADIR};
 use gettextrs::{bind_textdomain_codeset, bindtextdomain, textdomain};
