@@ -20,7 +20,7 @@
 
 use crate::Symbol;
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::glib::{self, BindingFlags, ParamSpec, Properties, Value};
+use gtk::glib::{self, clone, BindingFlags, ParamSpec, Properties, Value};
 use std::cell::RefCell;
 
 mod imp {
@@ -70,6 +70,24 @@ mod imp {
         fn constructed(&self) {
             // Call "constructed" on parent
             self.parent_constructed();
+
+            self.obj().symbol().unwrap().connect_market_change_notify(
+                clone!(@weak self as trend => @default-panic,
+                move |symbol|{
+                    trend.change.remove_css_class("error");
+                    trend.change.remove_css_class("success");
+                    trend.price.remove_css_class("error");
+                    trend.price.remove_css_class("success");
+                    if symbol.market_change()>= 0.0 {
+                        trend.change.add_css_class("success");
+                        trend.price.add_css_class("success");
+                    }
+                    else {
+                        trend.change.add_css_class("error");
+                        trend.price.add_css_class("error");
+                    }
+                }),
+            );
         }
     }
     impl BinImpl for SymbolTrend {}
