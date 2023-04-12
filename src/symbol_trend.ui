@@ -10,7 +10,7 @@
                 <property name="valign">center</property>
                 <child>
                     <object class="CurrencyLabel" id="price">
-                        <property name="currency" bind-source="symbol" bind-property="currency" bind-flags="bidirectional" />
+                        <property name="currency" bind-source="symbol" bind-property="currency" />
                         <property name="halign">end</property>
                     </object>
                 </child>

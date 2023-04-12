@@ -18,11 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 use adw::{prelude::*, subclass::prelude::*};
-use gtk::{
-    glib::{self, ParamSpec, Properties, Value},
-    prelude::*,
-    subclass::prelude::*,
-};
+use gtk::glib::{self, ParamSpec, Properties, Value};
 use std::cell::{Cell, RefCell};
 
 use crate::currency::Currency;

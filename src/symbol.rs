@@ -4,6 +4,7 @@ use gtk::{
     prelude::*,
 };
 use std::cell::RefCell;
+use crate::currency::Currency;
 
 mod imp {
     use super::*;
@@ -21,6 +22,8 @@ mod imp {
         price: RefCell<f64>,
         #[property(get, set)]
         market_change: RefCell<f64>,
+        #[property(get, set, builder(Currency::USD))]
+        currency : RefCell<Currency>
     }
 
     #[glib::object_subclass]
