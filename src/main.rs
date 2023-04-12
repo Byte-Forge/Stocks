@@ -28,6 +28,7 @@ mod window;
 mod yahoo_finance_model;
 
 use self::application::StocksApplication;
+use self::currency_label::CurrencyLabel;
 use self::symbol::Symbol;
 use self::symbol_trend::SymbolTrend;
 use self::window::StocksWindow;

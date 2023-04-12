@@ -18,6 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use crate::CurrencyLabel;
 use crate::Symbol;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, BindingFlags, ParamSpec, Properties, Value};
@@ -30,11 +31,11 @@ mod imp {
     #[properties(wrapper_type = super::SymbolTrend)]
     #[template(resource = "/org/byteforge/stocks/symbol_trend.ui")]
     pub struct SymbolTrend {
-        #[property(get, set, construct_only)]
-        symbol: RefCell<Option<Symbol>>,
+        #[property(get, set)]
+        pub symbol: RefCell<Option<Symbol>>,
         // Template widgets
         #[template_child]
-        pub price: TemplateChild<gtk::Label>,
+        pub price: TemplateChild<CurrencyLabel>,
         #[template_child]
         pub change: TemplateChild<gtk::Label>,
     }
@@ -96,15 +97,6 @@ mod imp {
             self.parent_map();
 
             let symbol = self.obj().symbol().unwrap();
-
-            symbol
-                .bind_property("price", &self.price.get(), "label")
-                .transform_to(|_, price: f64| {
-                    println!("Price: {:.2}", price);
-                    Some(format!("{:.2}", price))
-                })
-                .flags(BindingFlags::DEFAULT | BindingFlags::SYNC_CREATE)
-                .build();
 
             symbol
                 .bind_property("market_change", &self.change.get(), "label")

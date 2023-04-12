@@ -17,12 +17,13 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+use adw::{prelude::*, subclass::prelude::*};
 use gtk::{
     glib::{self, ParamSpec, Properties, Value},
     prelude::*,
     subclass::prelude::*,
 };
-use std::cell::Cell;
+use std::cell::{Cell, RefCell};
 
 use crate::currency::Currency;
 
@@ -35,12 +36,14 @@ mod imp {
         amount: Cell<f64>,
         #[property(get, set, builder(Currency::USD))]
         currency: Cell<Currency>,
+        #[property(get)]
+        label: RefCell<gtk::Label>,
     }
 
     #[glib::object_subclass]
     impl ObjectSubclass for CurrencyLabel {
         const NAME: &'static str = "CurrencyLabel";
-        type ParentType = gtk::Widget;
+        type ParentType = adw::Bin;
         type Type = super::CurrencyLabel;
     }
 
@@ -48,23 +51,55 @@ mod imp {
         fn properties() -> &'static [ParamSpec] {
             Self::derived_properties()
         }
-
         fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
+            match pspec.name() {
+                "currency" => {
+                    let currency = value
+                        .get()
+                        .expect("The value needs to be of type `Currency`.");
+                    self.currency.replace(currency);
+                    self.update_label();
+                },
+                "amount" => {
+                    let amount = value.get().expect("The value needs to be of type `f64`.");
+                    self.amount.replace(amount);
+                    self.update_label();
+                },
+                _ => unimplemented!(),
+            }
             self.derived_set_property(id, value, pspec)
         }
 
         fn property(&self, id: usize, pspec: &ParamSpec) -> Value {
             self.derived_property(id, pspec)
         }
+
+        fn constructed(&self) {
+            self.parent_constructed();
+
+            self.obj().set_child(Some(&self.obj().label()));
+        }
     }
 
+    impl BinImpl for CurrencyLabel {}
     impl WidgetImpl for CurrencyLabel {}
-    impl ListBoxRowImpl for CurrencyLabel {}
+
+    impl CurrencyLabel {
+        fn update_label(&self) {
+            let mut result = format!("{:.2}", self.obj().amount());
+            match self.obj().currency() {
+                Currency::USD => result.push_str("$"),
+                Currency::EUR => result.push_str("€"),
+                _ => unimplemented!(),
+            }
+            self.obj().label().set_text(&result);
+        }
+    }
 }
 
 glib::wrapper! {
   pub struct CurrencyLabel(ObjectSubclass<imp::CurrencyLabel>)
-      @extends gtk::Widget;
+      @extends gtk::Widget, adw::Bin;
 }
 
 impl CurrencyLabel {

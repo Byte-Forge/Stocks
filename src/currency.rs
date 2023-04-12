@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use gtk::{glib, prelude::*, subclass::prelude::*};
+use gtk::{glib};
 
 #[derive(Debug, Default, Clone, Copy, Eq, PartialEq, glib::Enum)]
 #[enum_type(name = "Currency")]
