@@ -28,9 +28,9 @@ mod imp {
     #[derive(Default, Properties, Debug)]
     #[properties(wrapper_type = super::CurrencyLabel)]
     pub struct CurrencyLabel {
-        #[property(get, set)]
+        #[property(get, set = Self::set_amount)]
         amount: Cell<f64>,
-        #[property(get, set, builder(Currency::USD))]
+        #[property(get, set = Self::set_currency, builder(Currency::USD))]
         currency: Cell<Currency>,
         #[property(get)]
         label: RefCell<gtk::Label>,
@@ -78,11 +78,7 @@ mod imp {
 
         fn update_label(&self) {
             let mut result = format!("{:.2}", self.obj().amount());
-            match self.obj().currency() {
-                Currency::USD => result.push_str("$"),
-                Currency::EUR => result.push_str("€"),
-                _ => unimplemented!(),
-            }
+            result.push_str(&self.obj().currency().to_symbol());
             self.obj().label().set_text(&result);
         }
     }

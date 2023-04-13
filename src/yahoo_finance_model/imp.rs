@@ -1,6 +1,7 @@
 //! Defines the implementation of our model
 
 use crate::symbol::Symbol;
+use crate::currency::Currency;
 use gio::subclass::prelude::*;
 use gtk::{
     gio,
@@ -94,8 +95,8 @@ impl YahooFinanceModel {
                                 let quote = response;
                                 symbol.set_price(quote.regular_market_price);
                                 symbol.set_market_change(quote.regular_market_change);
-                                symbol.set_currency(Currency.)
-                                symbol.set_currency(quote.currency);
+                                let currency = quote.currency.unwrap().parse::<Currency>().unwrap();
+                                symbol.set_currency(currency);
                                 Continue(true)
                             }
                 ),
