@@ -48,21 +48,6 @@ mod imp {
             Self::derived_properties()
         }
         fn set_property(&self, id: usize, value: &Value, pspec: &ParamSpec) {
-            match pspec.name() {
-                "currency" => {
-                    let currency = value
-                        .get()
-                        .expect("The value needs to be of type `Currency`.");
-                    self.currency.replace(currency);
-                    self.update_label();
-                },
-                "amount" => {
-                    let amount = value.get().expect("The value needs to be of type `f64`.");
-                    self.amount.replace(amount);
-                    self.update_label();
-                },
-                _ => unimplemented!(),
-            }
             self.derived_set_property(id, value, pspec)
         }
 
@@ -81,6 +66,16 @@ mod imp {
     impl WidgetImpl for CurrencyLabel {}
 
     impl CurrencyLabel {
+        fn set_currency(&self, currency: Currency) {
+            self.currency.replace(currency);
+            self.update_label();
+        }
+
+        fn set_amount(&self, amount: f64) {
+            self.amount.replace(amount);
+            self.update_label();
+        }
+
         fn update_label(&self) {
             let mut result = format!("{:.2}", self.obj().amount());
             match self.obj().currency() {

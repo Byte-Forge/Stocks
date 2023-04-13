@@ -94,6 +94,8 @@ impl YahooFinanceModel {
                                 let quote = response;
                                 symbol.set_price(quote.regular_market_price);
                                 symbol.set_market_change(quote.regular_market_change);
+                                symbol.set_currency(Currency.)
+                                symbol.set_currency(quote.currency);
                                 Continue(true)
                             }
                 ),
@@ -132,7 +134,7 @@ impl YahooFinanceModel {
                             obj.obj().clear();
                             for item in symbols {
                                 println!("{}", item.symbol);
-                                let symbol = Symbol::new(item.symbol.as_str());
+                                    let symbol = Symbol::new(item.symbol.as_str());
                                 if let Some(long_name) = item.long_name {
                                    symbol.set_longname(long_name);
                                 }

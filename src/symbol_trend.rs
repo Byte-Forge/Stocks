@@ -25,14 +25,16 @@ use gtk::glib::{self, clone, BindingFlags, ParamSpec, Properties, Value};
 use std::cell::RefCell;
 
 mod imp {
+    use gtk::glib::once_cell::sync::OnceCell;
+
     use super::*;
 
     #[derive(Debug, Default, Properties, gtk::CompositeTemplate)]
     #[properties(wrapper_type = super::SymbolTrend)]
     #[template(resource = "/org/byteforge/stocks/symbol_trend.ui")]
     pub struct SymbolTrend {
-        #[property(get, set)]
-        pub symbol: RefCell<Option<Symbol>>,
+        #[property(get, set, construct)]
+        pub symbol: OnceCell<Symbol>,
         // Template widgets
         #[template_child]
         pub price: TemplateChild<CurrencyLabel>,
@@ -72,23 +74,30 @@ mod imp {
             // Call "constructed" on parent
             self.parent_constructed();
 
-            self.obj().symbol().unwrap().connect_market_change_notify(
-                clone!(@weak self as trend => @default-panic,
-                move |symbol|{
-                    trend.change.remove_css_class("error");
-                    trend.change.remove_css_class("success");
-                    trend.price.remove_css_class("error");
-                    trend.price.remove_css_class("success");
-                    if symbol.market_change()>= 0.0 {
-                        trend.change.add_css_class("success");
-                        trend.price.add_css_class("success");
-                    }
-                    else {
-                        trend.change.add_css_class("error");
-                        trend.price.add_css_class("error");
-                    }
-                }),
-            );
+            let symbol = self.obj().symbol();
+            symbol
+                .bind_property("currency", &self.price.get(), "currency")
+                .build();
+
+             symbol
+                .bind_property("price", &self.price.get(), "amount")
+                .build();
+
+            symbol.connect_market_change_notify(clone!(@weak self as trend => @default-panic,
+            move |symbol|{
+                trend.change.remove_css_class("error");
+                trend.change.remove_css_class("success");
+                trend.price.remove_css_class("error");
+                trend.price.remove_css_class("success");
+                if symbol.market_change()>= 0.0 {
+                    trend.change.add_css_class("success");
+                    trend.price.add_css_class("success");
+                }
+                else {
+                    trend.change.add_css_class("error");
+                    trend.price.add_css_class("error");
+                }
+            }));
         }
     }
     impl BinImpl for SymbolTrend {}
@@ -96,7 +105,7 @@ mod imp {
         fn map(&self) {
             self.parent_map();
 
-            let symbol = self.obj().symbol().unwrap();
+            let symbol = self.obj().symbol();
 
             symbol
                 .bind_property("market_change", &self.change.get(), "label")

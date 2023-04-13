@@ -2,7 +2,6 @@
 <interface>
     <requires lib="gtk" version="4.0" />
     <requires lib="libadwaita" version="1.0" />
-    <object class="Symbol" id="symbol" />
     <template class="SymbolTrend" parent="AdwBin">
         <child>
             <object class="GtkBox">
@@ -10,7 +9,6 @@
                 <property name="valign">center</property>
                 <child>
                     <object class="CurrencyLabel" id="price">
-                        <property name="currency" bind-source="symbol" bind-property="currency" />
                         <property name="halign">end</property>
                     </object>
                 </child>
