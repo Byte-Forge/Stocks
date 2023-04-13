@@ -26,6 +26,7 @@ use gtk::{
 };
 
 use crate::Symbol;
+use crate::SymbolChart;
 use crate::SymbolTrend;
 use crate::YahooFinanceModel;
 
@@ -39,11 +40,11 @@ mod imp {
         #[template_child]
         pub yahoo_model: TemplateChild<YahooFinanceModel>,
         #[template_child]
-        pub stocks_listbox: TemplateChild<gtk::ListBox>,
-        #[template_child]
         pub search_listbox: TemplateChild<gtk::ListBox>,
         #[template_child]
         pub leaflet: TemplateChild<adw::Leaflet>,
+         #[template_child]
+        pub symbol_chart: TemplateChild<SymbolChart>,
     }
 
     #[glib::object_subclass]

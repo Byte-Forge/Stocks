@@ -28,7 +28,7 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for Symbol {
-        const NAME: &'static str = "Symbol";
+        const NAME: &'static str = "StocksSymbol";
         type Type = super::Symbol;
     }
 

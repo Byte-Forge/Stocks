@@ -38,7 +38,7 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for CurrencyLabel {
-        const NAME: &'static str = "CurrencyLabel";
+        const NAME: &'static str = "StocksCurrencyLabel";
         type ParentType = adw::Bin;
         type Type = super::CurrencyLabel;
     }

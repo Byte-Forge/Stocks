@@ -24,7 +24,7 @@ pub struct YahooFinanceModel {
 /// Basic declaration of our type for the GObject type system
 #[glib::object_subclass]
 impl ObjectSubclass for YahooFinanceModel {
-    const NAME: &'static str = "YahooFinanceModel";
+    const NAME: &'static str = "StocksYahooFinanceModel";
     type Type = super::YahooFinanceModel;
     type Interfaces = (gio::ListModel,);
 
@@ -102,10 +102,6 @@ impl YahooFinanceModel {
                 ),
             );
         }
-        /*for symbol in self.symbols.borrow().get()
-        {
-            self.provider.get_latest_quotes(&symbol.symbol(), "1d");
-        }*/
     }
 
     fn setup_search(&self) {

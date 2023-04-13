@@ -45,14 +45,6 @@
                         <signal name="row-activated" handler="handle_row_activated" swapped="true"/>
                       </object>
                     </child>
-                    <child>
-                      <object class="GtkListBox" id="stocks_listbox">
-                        <property name="selection-mode">single</property>
-                        <property name="show-separators">True</property>
-                        <property name="activate-on-single-click">True</property>
-                        <signal name="row-activated" handler="handle_row_activated" swapped="true"/>
-                      </object>
-                    </child>
                   </object>
                 </property>
               </object>
@@ -89,7 +81,14 @@
               </object>
             </child>
             <child>
-              <object class="AdwBin" id="detail_page"></object>
+              <object class="GtkBox">
+                <property name="vexpand">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="StocksSymbolChart" id="symbol_chart">
+                  </object>
+                </child>
+              </object>
             </child>
           </object>
         </child>
@@ -112,7 +111,7 @@
       </item>
     </section>
   </menu>
-  <object class="YahooFinanceModel" id="yahoo_model">
+  <object class="StocksYahooFinanceModel" id="yahoo_model">
     <property name="search_text" bind-source="search_entry" bind-property="text" bind-flags="bidirectional" />
   </object>
 </interface>

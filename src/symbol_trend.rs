@@ -22,7 +22,6 @@ use crate::CurrencyLabel;
 use crate::Symbol;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk::glib::{self, clone, BindingFlags, ParamSpec, Properties, Value};
-use std::cell::RefCell;
 
 mod imp {
     use gtk::glib::once_cell::sync::OnceCell;
@@ -44,7 +43,7 @@ mod imp {
 
     #[glib::object_subclass]
     impl ObjectSubclass for SymbolTrend {
-        const NAME: &'static str = "SymbolTrend";
+        const NAME: &'static str = "StocksSymbolTrend";
         type Type = super::SymbolTrend;
         type ParentType = adw::Bin;
 

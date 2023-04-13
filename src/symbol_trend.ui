@@ -2,13 +2,13 @@
 <interface>
     <requires lib="gtk" version="4.0" />
     <requires lib="libadwaita" version="1.0" />
-    <template class="SymbolTrend" parent="AdwBin">
+    <template class="StocksSymbolTrend" parent="AdwBin">
         <child>
             <object class="GtkBox">
                 <property name="orientation">vertical</property>
                 <property name="valign">center</property>
                 <child>
-                    <object class="CurrencyLabel" id="price">
+                    <object class="StocksCurrencyLabel" id="price">
                         <property name="halign">end</property>
                     </object>
                 </child>
