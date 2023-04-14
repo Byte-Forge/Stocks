@@ -94,8 +94,9 @@ mod imp {
             let color = style_context.color();
             let empty_opacity = if hc { 0.4 } else { 0.2 };
             let hover_opacity = if hc { 0.7 } else { 0.45 };
+            let line_size = 2.0;
 
-            let empty_color = gdk::RGBA::new(
+            let grid_color = gdk::RGBA::new(
                 color.red(),
                 color.green(),
                 color.blue(),
@@ -106,8 +107,25 @@ mod imp {
                 gtk::TextDirection::Rtl => true,
                 _ => false,
             };
-            let available_width = w;
+            let available_width = w - line_size as i32;
 
+            // Draw vertical grid lines
+            for x in (0..w).step_by(((w - line_size as i32) / 4) as usize) {
+              snapshot.append_color(
+                &grid_color,
+                &graphene::Rect::new(x as f32, 0.0, line_size, h as f32),
+                );
+            }
+
+             // Draw horizontal grid lines
+            for y in (0..h).step_by(((h - line_size as i32) / 4) as usize) {
+              snapshot.append_color(
+                &grid_color,
+                &graphene::Rect::new(0.0, y as f32, w as f32, line_size),
+                );
+            }
+
+            // Draw graph
             if let Some(ref points) = *self.points.borrow() {
                 let n_points = points.len() as i32;
 
