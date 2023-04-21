@@ -32,6 +32,7 @@ use self::application::StocksApplication;
 use self::currency_label::CurrencyLabel;
 use self::symbol::Symbol;
 use self::symbol_chart::SymbolChart;
+use self::symbol_chart::QuotePoint;
 use self::symbol_trend::SymbolTrend;
 use self::window::StocksWindow;
 use self::yahoo_finance_model::YahooFinanceModel;

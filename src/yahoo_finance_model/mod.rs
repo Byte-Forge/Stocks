@@ -46,6 +46,10 @@ impl YahooFinanceModel {
         // Emits a signal that 1 item was removed, 0 added at the position index
         self.items_changed(index, 1, 0);
     }
+
+    pub fn get_chart(&self, symbol: &Symbol, cb: Box<dyn Fn(stocks_api::Chart)>) {
+        self.imp().get_chart(symbol, cb)
+    }
 }
 
 impl Default for YahooFinanceModel {

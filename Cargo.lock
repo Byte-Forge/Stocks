@@ -1465,9 +1465,9 @@ dependencies = [
 
 [[package]]
 name = "stocks_api"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d07ee3ec76457fde58ed0b349dc07afd8992031dba6253b89bb3591c7c7b453f"
+checksum = "6adb47e1f821652129173c5dfb691ae349aaeb550acfaccb6720cb4d6e972ff7"
 dependencies = [
  "reqwest",
  "serde",

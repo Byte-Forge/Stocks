@@ -27,6 +27,7 @@ use gtk::{
 
 use crate::Symbol;
 use crate::SymbolChart;
+use crate::QuotePoint;
 use crate::SymbolTrend;
 use crate::YahooFinanceModel;
 
@@ -43,7 +44,7 @@ mod imp {
         pub search_listbox: TemplateChild<gtk::ListBox>,
         #[template_child]
         pub leaflet: TemplateChild<adw::Leaflet>,
-         #[template_child]
+        #[template_child]
         pub symbol_chart: TemplateChild<SymbolChart>,
     }
 
@@ -66,9 +67,23 @@ mod imp {
 
     #[gtk::template_callbacks]
     impl StocksWindow {
+        fn update_symbol_data(&self, symbol: &Symbol) {
+            self.yahoo_model.get_chart(symbol, Box::new(|chart| {
+                let points : Vec<QuotePoint> = Vec::new();
+            }));
+        }
+
         #[template_callback]
-        fn handle_row_activated(&self, _row: &gtk::ListBoxRow, _listbox: &gtk::ListBox) {
+        fn handle_row_activated(&self, row: &gtk::ListBoxRow, _listbox: &gtk::ListBox) {
             self.leaflet.navigate(adw::NavigationDirection::Forward);
+            let index = row.index();
+            let selected_symbol = self
+                .yahoo_model
+                .item(index as u32)
+                .expect("There needs to be an object at this position.")
+                .downcast::<Symbol>()
+                .expect("The object needs to be a `Symbol`.");
+            self.update_symbol_data(&selected_symbol);
         }
 
         #[template_callback]

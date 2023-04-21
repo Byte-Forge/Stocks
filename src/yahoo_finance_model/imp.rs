@@ -73,6 +73,28 @@ impl ListModelImpl for YahooFinanceModel {
 }
 
 impl YahooFinanceModel {
+    pub fn get_chart(&self, symbol : &Symbol, cb: Box<dyn Fn(stocks_api::Chart)>) {
+        let (sender, receiver) = MainContext::channel::<stocks_api::Chart>(PRIORITY_DEFAULT);
+        let provider = self.provider.clone();
+        let ticker = symbol.symbol();
+
+        tokio::spawn(async move {
+                let chart = provider.get_history(&ticker, "5m").await;
+                sender
+                    .send(chart.expect("Failed to get chart"))
+                    .expect("Failed to send to channel");
+            });
+
+        receiver.attach(
+                None,
+                move |response| {
+                    let chart = response;
+                    cb(chart);
+                    Continue(true)
+                }
+            );
+    }
+
     fn update_symbols(&self) {
         for i in 0..self.n_items() {
             let symbol = self.item(i).unwrap().downcast::<Symbol>().unwrap();

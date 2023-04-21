@@ -160,7 +160,6 @@ impl SymbolChart {
 
     fn seek_to_date(&self, time: DateTime<Utc>) {
         let width = self.width();
-;
     }
 
     pub fn set_points(&self, points: Option<Vec<QuotePoint>>) {
