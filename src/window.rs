@@ -18,18 +18,18 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-use adw::subclass::prelude::*;
-use adw::{prelude::*, ActionRow};
-use gtk::{
-    gio,
-    glib::{self, clone},
-};
-
+use crate::QuotePoint;
 use crate::Symbol;
 use crate::SymbolChart;
-use crate::QuotePoint;
 use crate::SymbolTrend;
 use crate::YahooFinanceModel;
+use adw::subclass::prelude::*;
+use adw::{prelude::*, ActionRow};
+use chrono::prelude::*;
+use gtk::{
+    gio,
+    glib::{self, clone, MainContext, PRIORITY_DEFAULT},
+};
 
 mod imp {
     use super::*;
@@ -68,9 +68,36 @@ mod imp {
     #[gtk::template_callbacks]
     impl StocksWindow {
         fn update_symbol_data(&self, symbol: &Symbol) {
-            self.yahoo_model.get_chart(symbol, Box::new(|chart| {
-                let points : Vec<QuotePoint> = Vec::new();
-            }));
+            let (sender, receiver) = MainContext::channel::<Vec<QuotePoint>>(PRIORITY_DEFAULT);
+
+            self.yahoo_model.get_chart(
+                symbol,
+                Box::new(move |chart| {
+                    let mut points: Vec<QuotePoint> = Vec::new();
+                    for idx in 0..chart.timestamps.len() {
+                        let timestamp = chart.timestamps[idx];
+                        let close = &chart.indicators[0].close[idx];
+                        let naive = NaiveDateTime::from_timestamp(timestamp as i64, 0);
+
+                        points.push(QuotePoint {
+                            time: DateTime::from_utc(naive, Utc),
+                            value: close.unwrap(),
+                        })
+                    }
+                    sender.send(points).expect("Failed to send to channel");
+                }),
+            );
+
+            // The main loop executes the closure as soon as it receives the message
+            receiver.attach(
+                None,
+                clone!(@weak self as obj => @default-return Continue(false),
+                            move |points| {
+                                obj.symbol_chart.set_points(Some(points));
+                                Continue(true)
+                            }
+                ),
+            );
         }
 
         #[template_callback]
